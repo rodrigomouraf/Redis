@@ -1,18 +1,18 @@
 # Redis
 
-* 1. [Motivação](#Motivacao)
-* 2. [Instalação no Windows](#install)
-* 3. [Manipulando Valores](#manipulando-valores)
-* 4. [Inserindo Dados](#inserindo-dados)
-* 5. [Otimizando Buscas](#otimizando-buscas)
-* 6. [Trabalhando com Hashes](#trabalahndo-com-hashes)
-* 7. [Sessões com Redis](#sessoes-com-redis)
-* 8. [Manipulações de Maneira Atômica](#manipulacoes-de-maneira-atomica)
-* 9. [Inserindo e Retirando Valores](#inserindo-retirando-valores)
-* 10. [Utilizando Coleção de Boolean](#utilizando-colecoes-boolean)
-* 11. [Sessões com Redis](#sessoes-com-redis)
+* [Motivação](#Motivacao)
+* [Instalação no Windows](#install)
+* [Manipulando Valores](#manipulando-valores)
+* [Inserindo Dados](#inserindo-dados)
+* [Otimizando Buscas](#otimizando-buscas)
+* [Trabalhando com Hashes](#trabalahndo-com-hashes)
+* [Sessões](#sessoes)
+* [Manipulações de Maneira Atômica](#manipulacoes-de-maneira-atomica)
+* [Inserindo e Retirando Valores](#inserindo-retirando-valores)
+* [Utilizando Coleção de Boolean](#utilizando-colecoes-boolean)
+* [Conclusao](#conclusao)
 
-## 1. <a name='Motivacao'></a> Motivação
+## <a name='Motivacao'></a> Motivação
 
 Redis é um banco de dados que armazena os dados na forma de chave-valor.
 
@@ -22,7 +22,7 @@ Quando utilizamos o Redis uma chave fica associada a um valor, dessa forma podem
 
 #
 
-## Instalação no Windows
+## <a name='install'></a> Instalação no Windows
 
 ### Link para instalação
 
@@ -30,7 +30,7 @@ Quando utilizamos o Redis uma chave fica associada a um valor, dessa forma podem
 
 #
 
-## Manipulando valores
+## <a name='manipulando-valores'></a> Manipulando valores
 
 Criando valores
 
@@ -52,7 +52,7 @@ Deletando valores
 
 #
 
-## Inserindo dados
+## <a name='inserindo-dados'></a> Inserindo dados
 
 Criando estrutura de busca para sorteios megasena:
 
@@ -70,7 +70,7 @@ Armazenando múltiplos valores:
     MSET resultado:03-05-2015:megasena "1, 3, 17, 19, 24, 26" resultado:22-04-2015:megasena "15, 18, 20, 32, 37, 41" resultado:15-04-2015:megasena "10, 15, 18, 22, 35, 43"
 ```
 
-## Otimizando buscas
+## <a name='otimizando-buscas'></a> Otimizando buscas
 
 Buscando todas as chaves
 
@@ -126,7 +126,7 @@ Outro exemplo bacana seria se nós quiséssemos trazer apenas os dias 15 e 17, d
 KEYS resultado:1[57]-??-????
 ```
 
-## Trabalhando com Hashes
+## <a name='trabalahndo-com-hashes'></a> Trabalhando com Hashes
 
 Até o momento verificamos como tratar os valores como strings soltas, mas e se quiséssemos inserir valores com mais algumas informações? E se nós quisermos adicionar a quantidade de ganhadores da megasena para o sorteio que saiu em determinado dia?
 
@@ -188,7 +188,7 @@ Removendo o registro:
 DEL resultado:24-05-2015:megasena
 ```
 
-## Sessões com Redis
+## <a name='sessoes'></a> Sessões
 
 ### Motivação
 
@@ -216,7 +216,7 @@ Verificar quanto tempo falta para expirar a sessão:
 TTL "sessao:usuario:1675"
 ```
 
-## Manipulações de maneira atômica no Redis
+## <a name='manipulacoes-de-maneira-atomica'></a> Manipulações de maneira atômica
 
 ### Motivação
 
@@ -246,7 +246,7 @@ Decrementando um registro
 DECR pagina:/contato:25-05-2015
 ```
 
-## Inserindo e retirando valores com Redis
+## <a name='inserindo-retirando-valores'></a> Inserindo e retirando valores
 
 ### Motivação
 
@@ -278,7 +278,7 @@ Para retirar:
 INCRBYFLOAT compras:25-05-2015:valor -12.5
 ```
 
-## Utilizando coleção de boolean no Redis
+## <a name='utilizando-colecoes-boolean'></a> Utilizando coleção de boolean
 
 ### Motivação
 
@@ -343,7 +343,7 @@ Verificando quantas pessoas acessaram meu site em pelo menos um dos dias 26 ou 2
 BITOP OR acesso:26-ou-27-06-2015 acesso:26-06-2015 acesso:27-06-2015
 ```
 
-## Conclusão
+## <a name='conclusao'></a> Conclusão
 
 Verificamos neste documento alguns comandos básicos do Redis e manipulações de dados.
 
