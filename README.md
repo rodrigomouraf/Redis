@@ -10,6 +10,8 @@
 * [Manipulações de Maneira Atômica](#manipulacoes-de-maneira-atomica)
 * [Inserindo e Retirando Valores](#inserindo-retirando-valores)
 * [Utilizando Coleção de Boolean](#utilizando-colecoes-boolean)
+* [Listas](#listas)
+* [Filas](#filas)
 * [Conclusao](#conclusao)
 
 ## <a name='Motivacao'></a> Motivação
@@ -342,6 +344,64 @@ Verificando quantas pessoas acessaram meu site em pelo menos um dos dias 26 ou 2
 ```!/bin/bash
 BITOP OR acesso:26-ou-27-06-2015 acesso:26-06-2015 acesso:27-06-2015
 ```
+## <a name='listas'></a> Listas
+
+### Motivação
+
+Já entrou em algum site e viu algo como as 5 notícias mais recentes, ou como no Twitter as últimas mensagens que aparecem por ordem cronológicas.
+
+Vamos entender agora como manipular listas e limita-las.
+
+No exemplo que a seguir, vamos criar uma lista que deve armazenar as últimas 3 notícias mais recentes do meu site, ou seja, ela deve adicionar um item ordenadamente e retirar o último item do array:
+
+Para inserir um item:
+
+```!/bin/bash
+LPUSH ultimas_noticias "teste para exclusão"
+LPUSH ultimas_noticias "Rede Record sobre ataque cibernético e muda programação às pressas"
+LPUSH ultimas_noticias "Michael Myers: veja a ordem cronológica dos filmes da saga Halloween"
+LPUSH ultimas_noticias "Fique longe do WhatsApp', alerta fundador do Telegram"
+```
+
+Também podemos inserir os valores acima de uma forma mais fácil caso queiramos inserir vários valores basta passar a ordem que desejamos inserir os valores LPUSH ou RPUSH chave e os valores entre espaços, ex:
+
+```!/bin/bash
+LPUSH ultimas_noticias "noticia_4" "noticia_3" "noticia_2" "noticia_1"
+```
+
+Para manter apenas as 3 posições requeridas
+
+```!/bin/bash
+LTRIM ultimas_noticias 0 2
+```
+
+Obtendo as notícias de acordo com os índices:
+
+```!/bin/bash
+LINDEX ultimas_noticias 0
+LINDEX ultimas_noticias 1
+LINDEX ultimas_noticias 2
+```
+
+Obtendo o tamanho da lista:
+
+```!/bin/bash
+LLEN ultimas_noticias
+```
+
+Obtendo um range da lista:
+
+```!/bin/bash
+LRANGE ultimas_noticias 1 2
+```
+
+## <a name='filas'></a>  Filas
+
+### Motivação
+
+Nosso site alterou a forma de login e para que possamos, agora a pessoa que criar uma conta precisa receber um e-mail para confirmação.
+
+Como faremos para tratar essa fila em que os usuários que entrarem não deverão ser inseridos a esquerda como no exemplo anterior, mas sim a direita, e também que quando um outro serviço consuma a nossa fila retire o usuário de forma ordenada da primeira posição?
 
 ## <a name='conclusao'></a> Conclusão
 
