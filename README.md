@@ -1,6 +1,18 @@
 # Redis
 
-## Motivação
+* 1. [Motivação](#Motivacao)
+* 2. [Instalação no Windows](#install)
+* 3. [Manipulando Valores](#manipulando-valores)
+* 4. [Inserindo Dados](#inserindo-dados)
+* 5. [Otimizando Buscas](#otimizando-buscas)
+* 6. [Trabalhando com Hashes](#trabalahndo-com-hashes)
+* 7. [Sessões com Redis](#sessoes-com-redis)
+* 8. [Manipulações de Maneira Atômica](#manipulacoes-de-maneira-atomica)
+* 9. [Inserindo e Retirando Valores](#inserindo-retirando-valores)
+* 10. [Utilizando Coleção de Boolean](#utilizando-colecoes-boolean)
+* 11. [Sessões com Redis](#sessoes-com-redis)
+
+## 1. <a name='Motivacao'></a> Motivação
 
 Redis é um banco de dados que armazena os dados na forma de chave-valor.
 
