@@ -344,6 +344,7 @@ Verificando quantas pessoas acessaram meu site em pelo menos um dos dias 26 ou 2
 ```!/bin/bash
 BITOP OR acesso:26-ou-27-06-2015 acesso:26-06-2015 acesso:27-06-2015
 ```
+
 ## <a name='listas'></a> Listas
 
 ### Motivação
@@ -352,7 +353,7 @@ Já entrou em algum site e viu algo como as 5 notícias mais recentes, ou como n
 
 Vamos entender agora como manipular listas e limita-las.
 
-No exemplo que a seguir, vamos criar uma lista que deve armazenar as últimas 3 notícias mais recentes do meu site, ou seja, ela deve adicionar um item ordenadamente e retirar o último item do array:
+No exemplo a seguir, vamos criar uma lista que deve armazenar as últimas 3 notícias mais recentes de um site, ou seja, a última notícia inserida deverá aparecer por primeiro:
 
 Para inserir um item:
 
@@ -399,9 +400,48 @@ LRANGE ultimas_noticias 1 2
 
 ### Motivação
 
-Nosso site alterou a forma de login e para que possamos, agora a pessoa que criar uma conta precisa receber um e-mail para confirmação.
+Nosso site alterou a forma de login, agora o usuário criar uma conta precisa receber um e-mail para confirmação.
 
-Como faremos para tratar essa fila em que os usuários que entrarem não deverão ser inseridos a esquerda como no exemplo anterior, mas sim a direita, e também que quando um outro serviço consuma a nossa fila retire o usuário de forma ordenada da primeira posição?
+Como faremos para tratar essa fila em que os usuários que entrarem primeiro deverão ser atendidos primeiro?
+
+Um outro ponto muito importante que trataremos na hora de consumir filas é a recursividade. Precisamos sempre estar perguntando se existe algum usuário esperando um e-mail? É necessário ficarmos consumindo processamento de máquina perguntando todo o momento se existe alguém na fila? O Redis já nos trás um solução para esse problema, vamos analisa-lo melhor [aqui](#filas-recursividade).
+
+Vamos inserir alguns usuários para demonstração:
+
+```!/bin/bash
+RPUSH fila:confirma-email "pessoa_1" "pessoa_2" "pessoa_3" "pessoa_4"
+```
+
+Vamos confirmar os usuários inseridos:
+
+```!/bin/bash
+LRANGE fila:confirma-email 0 3
+```
+
+Para atendermos e retirarmos o usuário do começo da lista podemos efetuar:
+
+```!/bin/bash
+LINDEX fila:confirma-email 0
+LPOP fila:confirma-email
+```
+
+<a name="filas-recursividade"></a>Utilizando Recursividade:
+
+Para deixarmos o Redis esperando por algum tempo alguém cair na fila, podemos usar  o comando:
+
+```!/bin/bash
+
+BLPOP fila:confirma-email 30
+
+```
+
+No exemplo acima, o Redis vai ficar esperando por 30 segundos alguém cair na fila. Mas e se quisermos esperar indeterminadamente por um usuário? basta alterarmos os parâmetros de 30 para 0, assim a aplicação ira esperar por tempo indeterminado um usuário cair na fila para ser processado.
+
+``` !/bin/bash
+
+BLPOP fila:confirma-email 0
+
+```
 
 ## <a name='conclusao'></a> Conclusão
 
