@@ -23,7 +23,7 @@ Quando utilizamos um banco sql precisamos varrer todo o banco para trazer o resu
 
 Quando utilizamos o Redis uma chave fica associada a um valor, dessa forma podemos obter um valor de uma forma muito mais rápida.
 
-#
+
 
 ## <a name='install'></a> Instalação no Windows
 
@@ -31,29 +31,29 @@ Quando utilizamos o Redis uma chave fica associada a um valor, dessa forma podem
 
 <https://github.com/MSOpenTech/redis/releases/download/win-3.0.500/Redis-x64-3.0.500.msi>
 
-#
+
 
 ## <a name='manipulando-valores'></a> Manipulando valores
 
-Criando valores
+Criando valores:
 
 ```!/bin/bash
     set total_de_cursos 105 
 ```
 
-Recuperando valores
+Recuperando valores:
 
 ```!/bin/bash
     get total_de_cursos
 ```
 
-Deletando valores
+Deletando valores:
 
 ```!/bin/bash
     Del total_de_cursos
 ```
 
-#
+
 
 ## <a name='inserindo-dados'></a> Inserindo dados
 
@@ -75,19 +75,19 @@ Armazenando múltiplos valores:
 
 ## <a name='otimizando-buscas'></a> Otimizando buscas
 
-Buscando todas as chaves
+### Buscando todas as chaves
 
 ```!/bin/bash
     KEYS *
 ```
 
-Buscando todas as consultas que contenham resultado:
+### Buscando todas as consultas dado parâmetro
 
 ```!/bin/bash
     KEYS "resultado:*"
 ```
 
-Buscando todas as keys do mês 05:
+Buscando todas as keys do mês 05
 
 ```!/bin/bash
     KEYS "resultado:*-05-2015*"
@@ -99,7 +99,7 @@ outra forma de fazer essa busca seria:
     KEYS "resultado:??-05-????*"
 ```
 
-Garantindo o retorno de um valor para a consulta.
+... assim garantindo o retorno de um valor para a consulta.
 
 Vamos analisar os registros abaixo:
 
@@ -185,7 +185,7 @@ Caso desejado remover a hashe inteira, então devemos utilizar o comando DEL nor
 HDEL resultado:24-05-2015:megasena "numeros"
 ```
 
-Removendo o registro:
+### Removendo o registro:
 
 ```!/bin/bash
 DEL resultado:24-05-2015:megasena
@@ -193,19 +193,17 @@ DEL resultado:24-05-2015:megasena
 
 ## <a name='sessoes'></a> Sessões
 
-### Motivação
-
 Para não precisarmos compartilhar informações de sessão entre servidores podemos compartilhar as informações no banco de dados.
 
 Outra vantagem é que por ser um banco chave-valor o acesso as informações acabam sendo bastante rápidas.
 
-Criando sessão
+### Criando sessão
 
 ```!/bin/bash
 HMSET "sessao:usuario:1675" "nome" "guilherme" "total_de_produtos" 3
 ```
 
-Definindo a expiração de sessão em 30 minutos:
+### Definindo a expiração de sessão em 30 minutos
 
 30 minutos = 60segundos * 30 = 1800segundos
 
@@ -213,15 +211,13 @@ Definindo a expiração de sessão em 30 minutos:
 EXPIRE "sesseao:usuario:1675" 1800
 ```
 
-Verificar quanto tempo falta para expirar a sessão:
+### Verificar quanto tempo falta para expirar a sessão
 
 ```!/bin/bash
 TTL "sessao:usuario:1675"
 ```
 
 ## <a name='manipulacoes-de-maneira-atomica'></a> Manipulações de maneira atômica
-
-### Motivação
 
 Digamos que o analista de dados da empresa queira ver como está a aceitação de uma página web.
 
@@ -231,19 +227,19 @@ Lembrando que enquanto estamos com o site online podem existir várias pessoas a
 
 Para garantir a atomicidade das informações seguem os comandos a serem utilizados, tanto para incremento, quanto para decremento:
 
-Criando um registro:
+### Criando um registro
 
 ```!/bin/bash
 SET pagina:/contato:25-05-2015 1 
 ```
 
-Incrementando um registro
+### Incrementando um registro
 
 ```!/bin/bash
 INCR pagina:/contato:25-05-2015
 ```
 
-Decrementando um registro
+### Decrementando um registro
 
 ```!/bin/bash
 DECR pagina:/contato:25-05-2015
@@ -251,23 +247,21 @@ DECR pagina:/contato:25-05-2015
 
 ## <a name='inserindo-retirando-valores'></a> Inserindo e retirando valores
 
-### Motivação
-
 Vamos analisar como podemos somar e subtrair valores utilizando o Redis, sem precisar manipular um set dos seus dados
 
-Inserindo e atribuindo um valor inteiro a uma compra:
+### Inserindo e atribuindo um valor inteiro a uma compra
 
 ```!/bin/bash
 INCRBY compras:25-05-2015:valor 12
 ```
 
-Retirando um valor inteiro de uma compra:
+### Retirando um valor inteiro de uma compra
 
 ```!/bin/bash
 DECRBY compras:25-05-2015:valor 12
 ```
 
-Inserindo ou retirando um valor decimal na compra:
+### Inserindo e retirando um valor decimal na compra
 
 Para inserir:
 
@@ -283,8 +277,6 @@ INCRBYFLOAT compras:25-05-2015:valor -12.5
 
 ## <a name='utilizando-colecoes-boolean'></a> Utilizando coleção de boolean
 
-### Motivação
-
 Digamos que queiramos saber quem acessou nosso site em determinado dia, como fazer para ter acesso a informação por id de usuário?
 
 Digamos que desejamos saber quantas pessoas acessaram meu site em determinado dia, como fazer para ter essa resposta rapidamente?
@@ -293,9 +285,9 @@ Ou talvez ainda mais interessante, Quantas pessoas acessaram meu site em mais de
 
 O Redis já contém uma estrutura otimizada para nós, essa estrutura nos permite setarmos diversos bits. Essa estrutura se chama BITSET.
 
-#
 
-Criando registros com BITSET:
+
+### Criando registros com BITSET
 
 No exemplo abaixo iremos criar um registro com os parâmetros:
 
@@ -308,7 +300,7 @@ SETBIT acesso:25-05-2015 46 1
 SETBIT acesso:25-05-2015 11 1
 ```
 
-Verificando as respostas dos id_usuari
+### Verificando as respostas dos id_usuario
 
 ```!/bin/bash
 GETBIT acesso:25-05-2015 46 = 1
@@ -328,19 +320,19 @@ SETBIT acesso:27-06-2015 1 1
 SETBIT acesso:27-06-2015 3 1
 ```
 
-Verificando quantas pessoas acessaram meu site no dia 26-06-2015
+### Verificando quantas pessoas acessaram meu site no dia 26-06-2015
 
 ```!/bin/bash
 BITCOUNT acesso:26-06-2015
 ```
 
-Verificando quantas pessoas acessaram meu site nos dias 25 e 26
+### Verificando quantas pessoas acessaram meu site nos dias 25 e 26
 
 ```!/bin/bash
 BITOP AND acesso:25-e-26-05-2015 acesso:26-06-2015 acesso:27-06-2015 
 ```
 
-Verificando quantas pessoas acessaram meu site em pelo menos um dos dias 26 ou 27.
+### Verificando quantas pessoas acessaram meu site em pelo menos um dos dias 26 ou 27.
 
 ```!/bin/bash
 BITOP OR acesso:26-ou-27-06-2015 acesso:26-06-2015 acesso:27-06-2015
@@ -348,15 +340,13 @@ BITOP OR acesso:26-ou-27-06-2015 acesso:26-06-2015 acesso:27-06-2015
 
 ## <a name='listas'></a> Listas
 
-### Motivação
-
 Já entrou em algum site e viu algo como as 5 notícias mais recentes, ou como no Twitter as últimas mensagens que aparecem por ordem cronológicas.
 
 Vamos entender agora como manipular listas e limita-las.
 
 No exemplo a seguir, vamos criar uma lista que deve armazenar as últimas 3 notícias mais recentes de um site, ou seja, a última notícia inserida deverá aparecer por primeiro:
 
-Para inserir um item:
+### Inserindo valore em uma lista:
 
 ```!/bin/bash
 LPUSH ultimas_noticias "teste para exclusão"
@@ -371,13 +361,15 @@ Também podemos inserir os valores acima de uma forma mais fácil caso queiramos
 LPUSH ultimas_noticias "noticia_4" "noticia_3" "noticia_2" "noticia_1"
 ```
 
-Para manter apenas as 3 posições requeridas
+### Limitando o tamanho de uma lista
+
+Para manter apenas as 3 posições requeridas:
 
 ```!/bin/bash
 LTRIM ultimas_noticias 0 2
 ```
 
-Obtendo as notícias de acordo com os índices:
+### Obtendo as notícias de acordo com os índices
 
 ```!/bin/bash
 LINDEX ultimas_noticias 0
@@ -385,13 +377,13 @@ LINDEX ultimas_noticias 1
 LINDEX ultimas_noticias 2
 ```
 
-Obtendo o tamanho da lista:
+### Obtendo o tamanho da lista
 
 ```!/bin/bash
 LLEN ultimas_noticias
 ```
 
-Obtendo um range da lista:
+### Obtendo um range da lista
 
 ```!/bin/bash
 LRANGE ultimas_noticias 1 2
@@ -399,34 +391,32 @@ LRANGE ultimas_noticias 1 2
 
 ## <a name='filas'></a>  Filas
 
-### Motivação
-
 Nosso site alterou a forma de login, agora o usuário criar uma conta precisa receber um e-mail para confirmação.
 
 Como faremos para tratar essa fila em que os usuários que entrarem primeiro deverão ser atendidos primeiro?
 
 Um outro ponto muito importante que trataremos na hora de consumir filas é a recursividade. Precisamos sempre estar perguntando se existe algum usuário esperando um e-mail? É necessário ficarmos consumindo processamento de máquina perguntando todo o momento se existe alguém na fila? O Redis já nos trás um solução para esse problema, vamos analisa-lo melhor [aqui](#filas-recursividade).
 
-Vamos inserir alguns usuários para demonstração:
+### Inserindo alguns usuários para demonstração
 
 ```bash
 RPUSH fila:confirma-email "pessoa_1" "pessoa_2" "pessoa_3" "pessoa_4"
 ```
 
-Vamos confirmar os usuários inseridos:
+### Confirmando usuários inseridos
 
 ```bash
 LRANGE fila:confirma-email 0 3
 ```
 
-Para atendermos e retirarmos o usuário do começo da lista podemos efetuar:
+### Retornando e retirando primeiro usuário da lista
 
 ```bash
 LINDEX fila:confirma-email 0
 LPOP fila:confirma-email
 ```
 
-<a name="filas-recursividade"></a>Utilizando Recursividade:
+### <a name="filas-recursividade"></a>Utilizando Recursividade:
 
 Para deixarmos o Redis esperando por algum tempo alguém cair na fila, podemos usar  o comando:
 
@@ -456,13 +446,11 @@ Resposta do Redis:
 
 ## <a name='conjuntos'></a>  Conjuntos
 
-### Motivação
-
 Em conjuntos, vamos verificar como o Redis pode nos ajudar a lidar com os joins do mundo sql, para quem não entende muito de joins em sql vamos propor um  problema:
 
 Eu Rodrigo tenho uma rede social, e gostaria que meus usuários que tivessem amigos em comum fossem alertados, ou no mínimo que meu usuário conseguisse ver qual amigo dele tem uma conexão em comum com outra pessoa. Em matemática conseguimos ver essa demanda através do diagrama de Venn, basicamente através de um diagrama de Venn podemos analisar as intersecções entre conjuntos. Pois é, achou que nunca usaria isso para nada né?!
 
-Inserindo elementos em um conjunto:
+### Inserindo elementos em um conjunto
 
 ```bash
 SADD "relacionamentos:rodrigo" "stephane"
@@ -471,13 +459,13 @@ SADD "relacionamentos:rodrigo" "paulo" "pedro" "joao"
 
 Obs: Não podemos inserir dois elementos idênticos em um conjunto.
 
-Removendo elemento de um conjunto:
+### Removendo elemento de um conjunto
 
 ```bash
 SREM "relacionamentos:rodrigo" "joao"
 ```
 
-Verificando quantos elementos temos dentro de um conjunto:
+### Verificando quantos elementos temos dentro de um conjunto
 
 ```bash
 SCARD "relacionamentos:rodrigo"
@@ -485,17 +473,19 @@ SCARD "relacionamentos:rodrigo"
 
 Obs: Em conjunto não perguntamos o tamanho para contar seus elementos, mas sim sua cardinalidade, por isso S de Set e CARD de cardinalidade.
 
-Retornando todos os elementos de um conjunto:
+### Retornando todos os elementos de um conjunto
 
 ```bash
 SMEMBERS "relacionamentos:rodrigo"
 ```
 
-Verificando se algum elemento pertence ao conjunto analisado, (retornar 1 se o conjunto contém o elemento e zero se o conjunto não contém o elemento):
+### Verificando se algum elemento pertence ao conjunto analisado
 
 ```bash
 SISMEMBER "relacionamentos:rodrigo" "stephane"
 ```
+
+Obs: Retornar 1 se o conjunto contém o elemento e zero se o conjunto não contém o elemento.
 
 #### Operações entre conjuntos
 
