@@ -441,15 +441,15 @@ BLPOP fila:confirma-email 0
 
 Executando a espera:
 
-![image-20221011225205728](C:\Users\rodri\AppData\Roaming\Typora\typora-user-images\image-20221011225205728.png)
+![image](https://user-images.githubusercontent.com/34314786/195231348-17b4c8e8-8137-43f8-aa9b-061a337a0dc5.png)
 
 Quando é enviado alguém para a fila:
 
-![image-20221011225412749](C:\Users\rodri\AppData\Roaming\Typora\typora-user-images\image-20221011225412749.png)
+![image](https://user-images.githubusercontent.com/34314786/195231398-fec9898f-5f70-4e67-b3c4-dd11530485b9.png)
 
 Resposta do Redis:
 
-![image-20221011225451808](C:\Users\rodri\AppData\Roaming\Typora\typora-user-images\image-20221011225451808.png)
+![image](https://user-images.githubusercontent.com/34314786/195231226-b2c718bd-5108-4148-8bd2-062744da20ae.png)
 
 ## <a name='conclusao'></a> Conclusão
 
