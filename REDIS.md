@@ -439,6 +439,18 @@ No exemplo acima, o Redis vai ficar esperando por 30 segundos alguém cair na fi
 BLPOP fila:confirma-email 0
 ```
 
+Executando a espera:
+
+![image-20221011225205728](C:\Users\rodri\AppData\Roaming\Typora\typora-user-images\image-20221011225205728.png)
+
+Quando é enviado alguém para a fila:
+
+![image-20221011225412749](C:\Users\rodri\AppData\Roaming\Typora\typora-user-images\image-20221011225412749.png)
+
+Resposta do Redis:
+
+![image-20221011225451808](C:\Users\rodri\AppData\Roaming\Typora\typora-user-images\image-20221011225451808.png)
+
 ## <a name='conclusao'></a> Conclusão
 
 Verificamos neste documento alguns comandos básicos do Redis e manipulações de dados.
