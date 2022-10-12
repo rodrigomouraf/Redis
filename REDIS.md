@@ -41,29 +41,35 @@ Quando utilizamos o Redis uma chave fica associada a um valor, dessa forma podem
 
 ## <a name='manipulando-valores'></a> Manipulando valores
 
-Criando valores:
+### Criando valores
 
 ```bash
     set total_de_cursos 105 
 ```
 
-Recuperando valores:
+### Recuperando valores
 
 ```bash
     get total_de_cursos
 ```
 
-Deletando valores:
+### Deletando valores
 
 ```bash
     Del total_de_cursos
+```
+
+### Verificando tipo de um registro
+
+```bash
+TYPE "total_de_cursos"
 ```
 
 
 
 ## <a name='inserindo-dados'></a> Inserindo dados
 
-Criando estrutura de busca para sorteios megasena:
+### Criando estrutura de busca para sorteios megasena
 
 ```bash
     SET resultado:17-05-2015:megasena "2, 15, 18, 28, 32"
@@ -73,7 +79,7 @@ Criando estrutura de busca para sorteios megasena:
     SET resultado:10-05-2015:megasena "4, 16, 19, 23, 28, 43"
 ```
 
-Armazenando múltiplos valores:
+### Armazenando múltiplos valores
 
 ```bash
     MSET resultado:03-05-2015:megasena "1, 3, 17, 19, 24, 26" resultado:22-04-2015:megasena "15, 18, 20, 32, 37, 41" resultado:15-04-2015:megasena "10, 15, 18, 22, 35, 43"
@@ -153,7 +159,7 @@ HSET resultado:24-05-2015:megasena "numeros"  "13, 17, 19, 25, 28, 32"
 HSET resultado:24-05-2015:megasena "ganhadores"  "23"
 ```
 
-### Inserindo múltiplos valores em um hashe
+### Inserindo múltiplas hashes
 
 Assim como temos o MSET temos também o HMSET, esse comando permite que seja inserido vários valores quando utilizamos o hashe
 
@@ -178,7 +184,7 @@ HGET resultado:24-05-2015:megasena "ganhadores"
 Podemos utilizar o comando HGETALL para retornar todos os valores dentro de uma chave.
 
 ```bash
-HGETALL resultado:24-05-2015:megasena
+HGETALL "resultado:24-05-2015:megasena"
 ```
 
 ### Deletando valores dentro de hashes
@@ -188,8 +194,28 @@ Para deletar valores dentro de uma hashe devemos usar o comando HDEL e passar o 
 Caso desejado remover a hashe inteira, então devemos utilizar o comando DEL normalmente passando a chave principal.
 
 ```bash
-HDEL resultado:24-05-2015:megasena "numeros"
+HDEL "resultado:24-05-2015:megasena" "numeros"
 ```
+
+### Inserindo valores inteiros em uma hashe (atomicamente)
+
+Abaixo vamos simular que queremos atualizar o número de ganhadores da megasena do dia 24-05-2015
+
+```bash
+HINCRBY "resultado:24-05-2015:megasena" "ganhadores" 2
+```
+
+Obs: Para retirar valores basta enviar o número negativo.
+
+### Inserindo valores decimais em uma hashe (atomicamente)
+
+Agora vamos entrar no paradoxo do gato de Schrödinger, acho que uma pessoa ganhou, mas só vou poder saber se conferir o bilhete e agora o que fazemos? bom eu vou inserir meio na minha conta de ganhadores da megasena do dia 24-05-2015, como vamos trabalhar com números quebrados precisamos utilizar outro comando para inserção de valores:
+
+```bash
+HINCRBYFLOAT "resultado:24-05-2015:megasena" "ganhadores" 0.5
+```
+
+Obs: Para retirar valores basta enviar o número negativo.  
 
 ### Removendo o registro:
 
@@ -513,10 +539,85 @@ Retornando os amigos que Rodrigo tem e que Paulo ainda não tem:
 SDIFF "relacionamentos:rodrigo" "relacionamentos:pedro"
 ```
 
+### Conjuntos ordenados
+
+Vamos criar um ranking de pontuação de nerds, de acordo com os amigos do Rodrigo:
+
+#### Adicionando elementos ordenadamente em um conjunto
+
+```bash
+ZADD pontuacoes 42 rodrigo 8001 everton 9000 felipe 1000000 stephane
+```
+
+#### Verificando a cardinalidade do conjunto
+
+```bash
+ZCARD pontuacoes
+```
+
+#### Retornando os elementos ordenadamente
+
+Trazendo os elementos em ordem crescente:
+
+```bash
+ZRANGE pontuacoes 0 4
+```
+
+Trazendo os elementos em ordem decrescente:
+
+```bash
+ZREVRANGE pontuacoes 0 4
+```
+
+Trazendo todos os nerds com as informações de pontuações:
+
+```bash
+ZREVRANGE pontuacoes 0 -1 WITHSCORES
+```
+
+#### Verificando quantos ponto determinado nerd tem
+
+```bash
+ZSCORE pontuacoes everton
+```
+
+#### Verificando a posição no ranking de determinado nerd
+
+ZRANK nos trás o ranking em ordem crescente e o ZREVRANK  nos trás o ranking em ordem decrescente.
+
+```bash
+ZRANK pontuacoes everton
+ZREVRANK pontuacoes everton
+```
+
+### Aumentando o score dos nerds
+
+Existem duas formas de aumentarmos o valor da pontuação de um nerd.
+
+#### Aumentando o score (não atômico)
+
+Como os elementos inseridos em um conjunto não são duplicados podemos reinserir um nerd com uma pontuação maior:
+
+O Everton está fazendo duas pós e trabalhando em 5 coisas ao mesmo tempo, por mais que isso seja mais CDF que nerd vamos dar uns pontos para ele porque está mandando bem de mais.
+
+```bash
+ZADD pontuacoes 12001 everton
+```
+
+Se verificarmos as pontuações do Everton vamos verificar que agora seu score passou a ser 12001, mas temos um problema usando a inserção dessa forma, digamos que outra pessoa com acesso a base do Redis também tenha alterado os valores do Everton, isso nos trará um erro, porque como verificamos antes o sistema não pode garantir que o valor setado para o Everton tenha sido o real daquele momento.
+
+#### Aumento o score (atômico)
+
+O Felipe descobriu o jogo Project Zomboid e não consegue mais parar de jogar, está sabendo tudo o que tem que fazer, e está disseminando a palavra do Project Zomboid, isso é nerd pra caramba! então vamos dar mais 8000 pontos para ele. Mas agora vamos fazer do jeito certo, ... *o processo de salvamento em segundo plano do Redis sempre é bifurcado quandoo servidor está fora da execução de um comando, portanto, cada comando relatado como atômico na RAM também é relatado atômico do ponto de vista do instantâneo do disco*... (https://redis.io/docs/getting-started/faq/#are-redis-on-disk-snapshots-atomic).   
+
+```bash
+ZINCRBY pontuacoes 8000 felipe 
+```
+
 
 
 ## <a name='conclusao'></a> Conclusão
 
-Verificamos neste documento alguns comandos básicos do Redis e manipulações de dados.
+Verificamos neste documento alguns comandos do Redis e manipulações de dados.
 
 Lembre-se que todos os valores armazenados no Redis são armazenados por padrão na memória do computador. Por isso você vai encontrar diversos lugares recomendado o uso de outro banco de dados para armazenar a origem dos seus dados.
