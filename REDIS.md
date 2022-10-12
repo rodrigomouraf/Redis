@@ -430,17 +430,13 @@ LPOP fila:confirma-email
 Para deixarmos o Redis esperando por algum tempo alguém cair na fila, podemos usar  o comando:
 
 ```!/bin/bash
-
 BLPOP fila:confirma-email 30
-
 ```
 
 No exemplo acima, o Redis vai ficar esperando por 30 segundos alguém cair na fila. Mas e se quisermos esperar indeterminadamente por um usuário? basta alterarmos os parâmetros de 30 para 0, assim a aplicação ira esperar por tempo indeterminado um usuário cair na fila para ser processado.
 
 ``` !/bin/bash
-
 BLPOP fila:confirma-email 0
-
 ```
 
 ## <a name='conclusao'></a> Conclusão
