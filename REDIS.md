@@ -12,6 +12,7 @@
 * [Utilizando Coleção de Boolean](#utilizando-colecoes-boolean)
 * [Listas](#listas)
 * [Filas](#filas)
+* [Conjuntos](#conjuntos)
 * [Conclusao](#conclusao)
 
 ## <a name='Motivacao'></a> Motivação
@@ -408,19 +409,19 @@ Um outro ponto muito importante que trataremos na hora de consumir filas é a re
 
 Vamos inserir alguns usuários para demonstração:
 
-```!/bin/bash
+```bash
 RPUSH fila:confirma-email "pessoa_1" "pessoa_2" "pessoa_3" "pessoa_4"
 ```
 
 Vamos confirmar os usuários inseridos:
 
-```!/bin/bash
+```bash
 LRANGE fila:confirma-email 0 3
 ```
 
 Para atendermos e retirarmos o usuário do começo da lista podemos efetuar:
 
-```!/bin/bash
+```bash
 LINDEX fila:confirma-email 0
 LPOP fila:confirma-email
 ```
@@ -429,13 +430,13 @@ LPOP fila:confirma-email
 
 Para deixarmos o Redis esperando por algum tempo alguém cair na fila, podemos usar  o comando:
 
-```!/bin/bash
+```bash
 BLPOP fila:confirma-email 30
 ```
 
 No exemplo acima, o Redis vai ficar esperando por 30 segundos alguém cair na fila. Mas e se quisermos esperar indeterminadamente por um usuário? basta alterarmos os parâmetros de 30 para 0, assim a aplicação ira esperar por tempo indeterminado um usuário cair na fila para ser processado.
 
-``` !/bin/bash
+``` bash
 BLPOP fila:confirma-email 0
 ```
 
@@ -450,6 +451,73 @@ Quando é enviado alguém para a fila:
 Resposta do Redis:
 
 ![image](https://user-images.githubusercontent.com/34314786/195231226-b2c718bd-5108-4148-8bd2-062744da20ae.png)
+
+
+
+## <a name='conjuntos'></a>  Conjuntos
+
+### Motivação
+
+Em conjuntos, vamos verificar como o Redis pode nos ajudar a lidar com os joins do mundo sql, para quem não entende muito de joins em sql vamos propor um  problema:
+
+Eu Rodrigo tenho uma rede social, e gostaria que meus usuários que tivessem amigos em comum fossem alertados, ou no mínimo que meu usuário conseguisse ver qual amigo dele tem uma conexão em comum com outra pessoa. Em matemática conseguimos ver essa demanda através do diagrama de Venn, basicamente através de um diagrama de Venn podemos analisar as intersecções entre conjuntos. Pois é, achou que nunca usaria isso para nada né?!
+
+Inserindo elementos em um conjunto:
+
+```bash
+SADD "relacionamentos:rodrigo" "stephane"
+SADD "relacionamentos:rodrigo" "paulo" "pedro" "joao"
+```
+
+Obs: Não podemos inserir dois elementos idênticos em um conjunto.
+
+Removendo elemento de um conjunto:
+
+```bash
+SREM "relacionamentos:rodrigo" "joao"
+```
+
+Verificando quantos elementos temos dentro de um conjunto:
+
+```bash
+SCARD "relacionamentos:rodrigo"
+```
+
+Obs: Em conjunto não perguntamos o tamanho para contar seus elementos, mas sim sua cardinalidade, por isso S de Set e CARD de cardinalidade.
+
+Retornando todos os elementos de um conjunto:
+
+```bash
+SMEMBERS "relacionamentos:rodrigo"
+```
+
+Verificando se algum elemento pertence ao conjunto analisado, (retornar 1 se o conjunto contém o elemento e zero se o conjunto não contém o elemento):
+
+```bash
+SISMEMBER "relacionamentos:rodrigo" "stephane"
+```
+
+#### Operações entre conjuntos
+
+Agora criaremos um conjunto de relacionamentos para o Pedro:
+
+```bash
+SADD "relacionamentos:pedro" "rodrigo" "joao" "pedro" "paulo"
+```
+
+Retornando os amigos em comum entre o Rodrigo e o Pedro:
+
+```bash
+SINTER "relacionamentos:rodrigo" "relacionamentos:pedro"
+```
+
+Retornando os amigos que Rodrigo tem e que Paulo ainda não tem:
+
+```bash
+SDIFF "relacionamentos:rodrigo" "relacionamentos:pedro"
+```
+
+
 
 ## <a name='conclusao'></a> Conclusão
 
